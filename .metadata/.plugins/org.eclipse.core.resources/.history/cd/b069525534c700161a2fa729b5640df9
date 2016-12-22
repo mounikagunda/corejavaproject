@@ -1,0 +1,115 @@
+package packgae1;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class DaoOperations
+
+{
+	Connection connection=null;
+	PreparedStatement preparedStatement=null;
+	ResultSet resultSet;
+	public DaoOperations() {
+		connection = MyConnection.getInstance().connection;
+	}
+
+	public int insertData(Employee employeeBean) {
+		int result = 0;
+		String query = "insert into employee values(?,?,?,?,?)";
+
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, employeeBean.getEmployeeId());
+			preparedStatement.setString(2, employeeBean.getEmployeeName());
+			preparedStatement.setDouble(3, employeeBean.getEmployeeSalary());
+			preparedStatement.setString(4, employeeBean.getEmployeeLocation());
+			preparedStatement.setFloat(5, employeeBean.getEmployeeExp());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
+
+	}
+	
+	public ArrayList<Employee> search()
+	{
+		ArrayList<Employee> employeeList=new ArrayList<Employee>();
+		
+		String query="select * from employee ";
+		
+		try {
+			preparedStatement=connection.prepareStatement(query);
+			//preparedStatement.setString(1, searchElement);
+			
+			resultSet=preparedStatement.executeQuery();
+			
+			Employee empBean=null;
+			while(resultSet.next())
+			{
+				empBean=new Employee();
+				empBean.setEmployeeId(resultSet.getString(1));
+				empBean.setEmployeeName(resultSet.getString(2));
+				empBean.setEmployeeSalary(resultSet.getDouble(3));
+				empBean.setEmployeeLocation(resultSet.getString(4));
+				empBean.setEmployeeExp(resultSet.getFloat(5));
+				employeeList.add(empBean);
+				
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		return employeeList;
+	}
+	public ArrayList<Employee> search(String searchElement)
+	{
+		ArrayList<Employee> employeeList=new ArrayList<Employee>();
+		
+		String query="select employeeId,employeeName,employeeSalary,employeeLocation,employeeExp from employee where employeeId=?";
+		
+		try {
+			preparedStatement=connection.prepareStatement(query);
+			preparedStatement.setString(1, searchElement);
+			
+			resultSet=preparedStatement.executeQuery();
+			
+			Employee empBean=null;
+			while(resultSet.next())
+			{
+				empBean=new Employee();
+				empBean.setEmployeeId(resultSet.getString(1));
+				empBean.setEmployeeName(resultSet.getString(2));
+				
+				empBean.setEmployeeExp(resultSet.getFloat(3));
+				employeeList.add(empBean);
+				
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		return employeeList;
+	}
+	
+	
+}

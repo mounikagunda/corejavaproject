@@ -1,0 +1,81 @@
+package details;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class Delete
+ */
+@WebServlet("/Delete")
+public class Delete extends HttpServlet {
+	Connection  connection=null;
+	PreparedStatement ps=null;
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public Delete() {
+        super();
+        connection=Myconnection.getInstance().connection;
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.getWriter().append("served at: ").append(request.getContextPath());
+		
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Employee emp=new Employee ();
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		String eid=request.getParameter("eid");
+		
+		
+		
+		 emp.setEid(eid);
+		 
+		 try{
+			 PreparedStatement ps=connection.prepareStatement("delete from  emp where eid=?");
+			 
+			 
+			 ps.setString(1, emp.getEid());
+			 int i=ps.executeUpdate();
+			 out.print("Successfully Deleted");
+		 }
+		 catch(SQLException e)
+		 {
+			 out.print(e);
+			 
+		 }
+		 out.print("<html><body>");
+		 out.print("<form action='index.html' "+ ">");
+		 out.print("<input type='submit' value='go'>");
+		 out.print("</form></body></html>");
+		
+	}
+		
+		
+		
+		
+		
+		// TODO Auto-generated method stub
+	}
+

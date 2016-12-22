@@ -1,0 +1,17 @@
+package threads;
+
+public class Example1 extends Thread
+
+{
+public void run()
+{
+	System.out.println("dispaly");
+	
+}
+public static void main(String abc[])
+{
+	Example1 s=new Example1();
+	s.start();
+	s.run();
+}
+}

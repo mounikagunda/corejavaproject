@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Update</title>
+</head>
+<body style="background-color:White">
+<div align="center">
+<h1>Employee Information</h1>
+<form action="update" method="post">
+<table>
+<tr>protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		// TODO Auto-generated method stub
+		Employee emp=new Employee ();
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		String eid=request.getParameter("eid");
+		String ename=request.getParameter("ename");
+		String esal=request.getParameter("esal");
+		String eloc=request.getParameter("eloc");
+		String eexp=request.getParameter("eexp");
+		int sal,exp;
+		try
+		{
+			sal=Integer.parseInt(esal);
+			exp=Integer.parseInt(eexp);
+		}
+		catch(Exception e)
+		{
+			sal=0;
+			exp=0;
+		}
+		 emp.setEid(eid);
+		 emp.setEname(ename);
+		 emp.setEsal(sal);
+		 emp.setEloc(eloc);
+		 emp.setEexp(exp);
+		 
+		 try{
+			 PreparedStatement ps=connection.prepareStatement("update employee set ename=?,esal=?,eloc=?,eexp=? where eid=?");
+			 ps.setString(1, emp.getEid());
+			 ps.setString(2,emp.getEname());
+			 ps.setInt(3,emp.getEsal());
+			 ps.setString(4,emp.getEloc());
+			 ps.setInt(5,emp.getEexp());
+			 int i=ps.executeUpdate();
+			 out.print("Successfully Updated");
+		 }
+		 catch(SQLException e)
+		 {
+			 out.print(e);
+			 
+		 }
+		 out.print("<html><body>");
+		 out.print("<form action='index.html' "+ ">");
+		 out.print("<input type='submit' value='go'>");
+		 out.print("</form></body></html>");
+		
+	}
+
+<td> Enter Employee Id to Update:</td>
+<td><input type="text" name="eid"/></td>
+</tr>
+<tr>
+<td> Enter Employee Name to Update:</td>
+<td><input type="text" name="ename"/></td>
+</tr>
+<tr>
+<td> Enter Employee Salary to Update:</td>
+<td><input type="number" name="esal"/></td>
+</tr>
+<tr>
+<td> Enter Employee Location to Update:</td>
+<td><input type="text" name="eloc"/></td>
+</tr>
+<tr>
+<td> Enter Employee Experience to Update:</td>
+<td><input type="text" name="eexp"/></td>
+</tr>
+</table>
+<input type="submit" value="submit">
+
+</form>
+</div>
+
+</body>
+</html>

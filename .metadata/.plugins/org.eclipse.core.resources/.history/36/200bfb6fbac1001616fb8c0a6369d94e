@@ -1,0 +1,271 @@
+package com.ss;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+//import com.mysql.jdbc.Statement;
+
+public class DataBaseOperations 
+{
+	Connection connection;
+	java.sql.Statement statementRef;
+	PreparedStatement statement;
+	ResultSet resultSet;
+	
+	public DataBaseOperations()
+	{
+		connection=MyConnection.getInstance().connection;
+	}
+	
+	public int insertData(Employee employee)
+	{
+		int result=0;
+		
+		String query="insert into employee values("+ employee.getename()+','+"'"+employee.geteid()+"',"+employee.getesal()+"','"employee.getelocation()+"','"+employee.geteexp()+"','"+employee.geteloan()+ ")";
+		try {
+			statementRef=connection.createStatement();
+			result=statementRef.executeUpdate(query);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
+		
+	}
+	
+	public int insertDataUsingPrepared(Employee employee)
+	{
+		int result=0;
+		
+		String query="insert into employee values(?,?,?,?,?,?)";
+		
+		try {
+			statement=connection.prepareStatement(query);
+			
+			statement.setInt(1, employee.geteid());
+			statement.setString(2, employee.getename());
+			statement.setDouble(3, employee.getesal());
+			statement.setString(4,employee.getelocation());
+			statement.setDouble(5, employee.geteexp());
+			statement.setDouble(6, employee.geteloan());
+			
+			result=statement.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return result;
+		
+		
+	}
+	public void delete(int eid)
+	{
+		
+		String query="delete from employee where eid=?";
+		
+		try 
+		{
+			statement=connection.prepareStatement(query);
+			
+			statement.setInt(1, eid);
+			
+			int x=	statement.executeUpdate();
+			System.out.println("deleted rows:"+ x);
+
+		}
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void update(String ename,int eid,double esal,String elocation,double eexp,double eloan)
+	{
+	String query="update employee set ename=?,esal=?,elocation=? ,eexp=? , eloan=? where eid=?";
+	try
+	{
+    statement=connection.prepareStatement(query);
+	statement.setString(1, ename);
+	statement.setInt(4, eid);
+	statement.setDouble(2, esal);
+	statement.setString(3, elocation);
+	statement.setDouble(4, eexp);
+	statement.setDouble(5, eloan);
+	
+	int x=statement.executeUpdate();
+	System.out.println("Updated rows="+x);
+	}
+	catch (SQLException e)
+	{
+			e.printStackTrace();
+	}
+	}
+
+		
+	
+	public ArrayList<Employee> search()
+	{
+		ArrayList<Employee> listOfEmployee=new ArrayList<Employee>();
+		
+		Employee employeeRef=null;
+		
+		String query="select * from employee";
+		
+		try {
+			
+			statement=connection.prepareStatement(query);
+			resultSet=statement.executeQuery();
+			
+			while(resultSet.next())
+			{
+				employeeRef=new Employee();
+				employeeRef.seteid(resultSet.getInt(1));
+				employeeRef.setename(resultSet.getString(2));
+				employeeRef.setesal(resultSet.getDouble(3));
+				employeeRef.setelocation(resultSet.getString(4));
+				employeeRef.seteexp(resultSet.getDouble(5));
+				employeeRef.seteloan(resultSet.getDouble(6));
+				listOfEmployee.add(employeeRef);
+			}
+			
+			
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		return listOfEmployee;
+	}
+	
+	public ArrayList<Employee> search(int eid)
+	{
+		ArrayList<Employee> listOfEmployee=new ArrayList<Employee>();
+		
+		Employee employeeRef=null;
+		
+		String query="select * from employee where eid=?";
+		
+		try {
+			statement=connection.prepareStatement(query);
+			
+			statement.setInt(1, eid);
+			
+			resultSet=statement.executeQuery();
+			
+			while(resultSet.next())
+			{
+				employeeRef=new Employee();
+				employeeRef.seteid(resultSet.getInt(1));
+				employeeRef.setename(resultSet.getString(2));
+				employeeRef.setesal(resultSet.getDouble(3));
+				employeeRef.setelocation(resultSet.getString(4));
+				employeeRef.seteexp(resultSet.getDouble(5));
+				employeeRef.seteloan(resultSet.getDouble(6));
+				
+				
+				
+				
+				listOfEmployee.add(employeeRef);
+			}
+			
+			
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		return listOfEmployee;
+	}
+
+public void loan(double eloan,int eid) throws Exception
+	
+	{
+		
+		ArrayList<Employee> loe=new ArrayList<Employee>();
+		Iterator<Employee> it=loe.iterator();
+		Employee ee=null;
+		while(it.hasNext())
+		{
+		ee=(Employee)it.next();
+		
+		if(ee.geteexp()>2 && ee.geteexp()<4)
+		{
+			eloan=ee.getesal()/2;
+			ee.seteloan(eloan);
+			
+		}
+		else
+		{
+			System.out.println("not eligible for loan");
+			
+		}
+	}
+		String query="update employee set eloan=? where eid=?";
+
+		statement=connection.prepareStatement(query);
+		statement.setDouble(1, eloan);
+		statement.setInt(2, eid);
+		int x=statement.executeUpdate();
+		
+		System.out.println("Updated rows="+x);	
+		
+		
+	}
+
+	
+}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+

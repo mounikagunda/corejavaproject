@@ -1,0 +1,107 @@
+package packgae1;
+
+import java.io.IOException;
+
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import packgae1.Employee;
+
+/**
+ * Servlet implementation class Update
+ */
+//@WebServlet("/Update")
+public class Update extends HttpServlet {
+	Connection  connection=null;
+	PreparedStatement ps=null;
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public Update() {
+        super();
+        // TODO Auto-generated constructor stub
+        connection=MyConnection.getInstance().connection;
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("served at: ").append(request.getContextPath());
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		Employee emp=new Employee ();
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		String employeeId=request.getParameter("employeeId");
+		String employeeName=request.getParameter("employeeName");
+		String employeeSalary=request.getParameter("employeeSalary");
+		String employeeLocation=request.getParameter("employeeLocation");
+		String employeeExp=request.getParameter("employeeExp");
+		String employeeLoan=request.getParameter("employeeLoan");
+	    double salary;
+		float exp;
+		double loan;
+		try
+		{
+			salary=Double.parseDouble(employeeSalary);
+			 loan=Double.parseDouble(employeeLoan);
+			 exp=Float.parseFloat(employeeExp);
+		}
+		catch(Exception e)
+		{
+			salary=0.0;
+			exp=0.0f;
+			loan=0.0;
+		}
+		 emp.setEmployeeId(employeeId);
+		 emp.setEmployeeName(employeeName);
+		 emp.setEmployeeSalary(salary);
+		 emp.setEmployeeLocation(employeeLocation);
+		 emp.setEmployeeExp(exp);
+		 emp.setEmployeeLoan(loan);
+		 
+		 try{
+			 PreparedStatement ps=connection.prepareStatement("update employee set employeeName=?,employeeSalary=?,employeeLocation=?,employeeExp=?,employeeLoan=? where employeeId=?");
+			 
+			 ps.setString(1,emp.getEmployeeName());
+			 ps.setDouble(2,emp.getEmployeeSalary());
+			 ps.setString(3,emp. getEmployeeLocation());
+			 ps.setDouble(4,emp. getEmployeeExp());
+			
+			 ps.setString(5, emp.getEmployeeId());
+			 ps.setDouble(6, emp.getEmployeeLoan());
+			 int i=ps.executeUpdate();
+			 out.print("Successfully Updated");
+		 }
+		 catch(SQLException e)
+		 {
+			 out.print(e);
+			 
+		 }
+		 out.print("<html><body>");
+		 out.print("<form action='index.html' "+ ">");
+		 out.print("<input type='submit' value='go'>");
+		 out.print("</form></body></html>");
+		
+	}
+
+	}
+
+

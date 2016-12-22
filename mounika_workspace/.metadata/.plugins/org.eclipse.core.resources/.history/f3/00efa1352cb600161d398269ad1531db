@@ -1,0 +1,18 @@
+package threads;
+
+public class Example2 implements Runnable
+
+{
+	public void run()
+	{
+		System.out.println("display");
+		
+	}
+public static void main(String abc[])
+{
+	Example2 e=new Example2();
+	Thread t=new Thread(di);
+	t.start();
+	t.run();
+}
+}
